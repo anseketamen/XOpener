@@ -1,0 +1,2 @@
+# XOpener
+ChromeやEdgeからエクスプローラーを開くツール
