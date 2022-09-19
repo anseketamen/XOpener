@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Classes\xopener]
+@="URL:xopener Protocol"
+"URL Protocol"=""
+
+[HKEY_CURRENT_USER\Software\Classes\xopener\shell\open\command]
+@="C:\\xopener\\xopener.exe \"%1\""
