@@ -24,8 +24,6 @@ C:\xopener\xopener.reg
 
 Webページだったら以下のようにします。
 
-[Cドライブへのリンク](xopener:C:\\)
-
 ```html
 <a href="xopener:C:\">Cドライブへのリンク</a>
 ```
