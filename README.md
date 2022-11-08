@@ -16,6 +16,7 @@ C:\xopener\xopener.cs
 C:\xopener\xopener.reg
 C:\xopener\helpers
 C:\xopener\helpers\xopener-convert.cs
+C:\xopener\helpers\xopener-convert-html.cs
 C:\xopener\helpers\xopener-trans.cs
 C:\xopener\helpers\xopener-trans.lnk
 ```
@@ -73,6 +74,7 @@ Microsoft Teams以外にDiscordなどでも使うことができます。
 
 * XOpener-Trans：メインのプログラムです。待ち受けポートに対しパスが`/`、クエリが`?path=[ファイル・フォルダパス]`となっているURLでアクセスすることでxopenerを起動できるようにします。
 * XOpener-Convert：ファイルパスをクリップボードにコピーした状態でこれを起動することで、XOpener-Transで用いるhttpリンクを作成することができます。
+* XOpener-Convert-Html：XOpener-ConvertだとエンコードされたURLで読みづらいため、代わりにHTMLに整形したリンクを生成します。TeamsやWordなどにそのままリンクとして貼り付けることができます。
 
 
 ## その他
