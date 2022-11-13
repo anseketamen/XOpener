@@ -7,6 +7,7 @@ using System.Web;
 using System.Windows.Forms;
 using System.Text;
 using System.Globalization;
+using XOpner;
 
 namespace XOpenerConverter
 {
@@ -36,7 +37,11 @@ namespace XOpenerConverter
                     Clipboard.SetData(DataFormats.Html, new MemoryStream(Encoding.UTF8.GetBytes(html)));
 
                     System.Media.SystemSounds.Asterisk.Play();
-                    MessageBox.Show(pathWithoutQuotation + "\r\nを" + html + "に変換しました", "XOpener-Convert 情報", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    // コンバート確認のポップアップを表示
+                    if (XOpner.Program._hiddenConvertedPopUp == false)
+                    {
+                        MessageBox.Show(pathWithoutQuotation + "\r\nを" + html + "に変換しました", "XOpener-Convert 情報", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    }
                 }
             }
             else

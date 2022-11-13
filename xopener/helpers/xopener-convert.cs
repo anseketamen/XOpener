@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Windows.Forms;
+using XOpner;
 
 namespace XOpenerConverter
 {
@@ -31,7 +32,10 @@ namespace XOpenerConverter
                     Clipboard.SetText(url);
 
                     System.Media.SystemSounds.Asterisk.Play();
-                    MessageBox.Show(pathWithoutQuotation + "\r\nを" + url + "\r\nに変換しました", "XOpener-Converter 情報", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    if (XOpner.Program._hiddenConvertedPopUp == false)
+                    {
+                        MessageBox.Show(pathWithoutQuotation + "\r\nを" + url + "\r\nに変換しました", "XOpener-Converter 情報", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    }
                 }
             }
             else
