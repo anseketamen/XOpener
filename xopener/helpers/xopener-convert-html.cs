@@ -38,7 +38,7 @@ namespace XOpenerConverter
 
                     System.Media.SystemSounds.Asterisk.Play();
                     // コンバート確認のポップアップを表示
-                    if (_hiddenConvertedPopUp == false)
+                    if (_hidesConvertedPopUp == false)
                     {
                         MessageBox.Show(pathWithoutQuotation + "\r\nを" + html + "に変換しました", "XOpener-Convert 情報", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     }
