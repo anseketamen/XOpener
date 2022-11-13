@@ -7,7 +7,6 @@ using System.Web;
 using System.Windows.Forms;
 using System.Text;
 using System.Globalization;
-using XOpner;
 
 namespace XOpenerConverter
 {
