@@ -5,12 +5,10 @@ using System.Media;
 using System.Web;
 using System.Windows.Forms;
 
-namespace XOpner
+namespace XOpener
 {
     public class Program
     {
-        private static readonly bool _hiddenConvertedPopUp = false;
-
         public static void Main(string[] args)
         {
             if (args.Length > 0)

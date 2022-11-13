@@ -13,6 +13,7 @@ namespace XOpenerConverter
 {
     public static class Program
     {
+        private static readonly bool _hidesConvertedPopUp = false;
         private static string CanCopyMessage = "\r\n\r\n（このメッセージは Ctrl + C でコピーできます）";
 
         [STAThread]
@@ -38,7 +39,7 @@ namespace XOpenerConverter
 
                     System.Media.SystemSounds.Asterisk.Play();
                     // コンバート確認のポップアップを表示
-                    if (XOpner.Program._hiddenConvertedPopUp == false)
+                    if (_hiddenConvertedPopUp == false)
                     {
                         MessageBox.Show(pathWithoutQuotation + "\r\nを" + html + "に変換しました", "XOpener-Convert 情報", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     }

@@ -5,12 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Windows.Forms;
-using XOpner;
+using XOpener;
 
 namespace XOpenerConverter
 {
     public static class Program
     {
+        private static readonly bool _hidesConvertedPopUp = false;
         private static string CanCopyMessage = "\r\n\r\n（このメッセージは Ctrl + C でコピーできます）";
 
         [STAThread]
@@ -32,7 +33,7 @@ namespace XOpenerConverter
                     Clipboard.SetText(url);
 
                     System.Media.SystemSounds.Asterisk.Play();
-                    if (XOpner.Program._hiddenConvertedPopUp == false)
+                    if (_hidesConvertedPopUp == false)
                     {
                         MessageBox.Show(pathWithoutQuotation + "\r\nを" + url + "\r\nに変換しました", "XOpener-Converter 情報", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     }
