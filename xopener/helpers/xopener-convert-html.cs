@@ -34,7 +34,10 @@ namespace XOpenerConverter
                     var html = CreateHtmlDocument(url);
                     // HTMLをクリップボードに貼り付けるときはUTF-8に変換したMemoryStreamにする
                     // byte[]だとエラーになった
-                    Clipboard.SetData(DataFormats.Html, new MemoryStream(Encoding.UTF8.GetBytes(html)));
+                    var obj = new DataObject();
+                    obj.SetData(DataFormats.Html, true, new MemoryStream(Encoding.UTF8.GetBytes(html)));
+                    obj.SetData(DataFormats.Text, true, "xopener:" + pathWithoutQuotation);
+                    Clipboard.SetDataObject(obj);
 
                     System.Media.SystemSounds.Asterisk.Play();
                     // コンバート確認のポップアップを表示
@@ -70,8 +73,8 @@ namespace XOpenerConverter
 
             var htmlBuilder = new StringBuilder();
 
-            var htmlHeader = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head>\r\n<body><!--StartFragment-->\r\n";
-            var htmlFooter = "\r\n<!--EndFragment--></body>\r\n</html>\r\n";
+            var htmlHeader = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head>\r\n<body>\r\n<!--StartFragment-->\r\n";
+            var htmlFooter = "<!--EndFragment-->\r\n</body>\r\n</html>\r\n";
 
             int headerSize = 89;
             int htmlHeaderSize = Encoding.UTF8.GetByteCount(htmlHeader);
@@ -86,8 +89,10 @@ namespace XOpenerConverter
             htmlBuilder.AppendFormat("{0:000000}", headerSize + htmlHeaderSize);
             htmlBuilder.Append("\r\nEndFragment:");
             htmlBuilder.AppendFormat("{0:000000}", headerSize + htmlHeaderSize + htmlFragmentSize);
+            htmlBuilder.Append("\r\n");
             htmlBuilder.Append(htmlHeader);
             htmlBuilder.Append(htmlBody);
+            htmlBuilder.Append("\r\n");
             htmlBuilder.Append(htmlFooter);
 
             return htmlBuilder.ToString();
