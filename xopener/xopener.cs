@@ -5,34 +5,37 @@ using System.Media;
 using System.Web;
 using System.Windows.Forms;
 
-public class Program
+namespace XOpener
 {
-    public static void Main(string[] args)
+    public class Program
     {
-        if (args.Length > 0)
+        public static void Main(string[] args)
         {
-            // 何か引数がある場合
-            // カスタムURLスキームでは1番目の引数に「xopener:ファイルパス」が入る
-            // URLエンコードされてるのでデコードして、冒頭のxopener:も消す
-            var path = HttpUtility.UrlDecode(args[0]).Replace('/','\\').Replace("xopener:","");
-
-            if (File.Exists(path) || Directory.Exists(path))
+            if (args.Length > 0)
             {
-                // ファイル・フォルダが存在するなら開く
-                Process.Start("explorer.exe", path);
+                // 何か引数がある場合
+                // カスタムURLスキームでは1番目の引数に「xopener:ファイルパス」が入る
+                // URLエンコードされてるのでデコードして、冒頭のxopener:も消す
+                var path = HttpUtility.UrlDecode(args[0]).Replace('/', '\\').Replace("xopener:", "");
+
+                if (File.Exists(path) || Directory.Exists(path))
+                {
+                    // ファイル・フォルダが存在するなら開く
+                    Process.Start("explorer.exe", path);
+                }
+                else
+                {
+                    // ファイル・フォルダが存在しない
+                    SystemSounds.Beep.Play();
+                    MessageBox.Show(path + " は存在しません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
-                // ファイル・フォルダが存在しない
+                // 引数がおかしい
                 SystemSounds.Beep.Play();
-                MessageBox.Show(path + " は存在しません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("起動には引数が必要です", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-        else
-        {
-            // 引数がおかしい
-            SystemSounds.Beep.Play();
-            MessageBox.Show("起動には引数が必要です", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }
