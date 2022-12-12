@@ -1,57 +1,87 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
-using System.Text;
-using System.Globalization;
 
 namespace XOpenerConverter
 {
     public static class Program
     {
-        private static readonly bool _hidesConvertedPopUp = false;
         private static string CanCopyMessage = "\r\n\r\n（このメッセージは Ctrl + C でコピーできます）";
 
         [STAThread]
         public static void Main(string[] args)
         {
-            var data = Clipboard.GetDataObject();
-            if (data.GetDataPresent(DataFormats.Text))
+            if (args.Length == 0)
             {
-                var path = Clipboard.GetText();
-                if (string.IsNullOrEmpty(path) || path.Contains("\n") || path.StartsWith("http:"))
+                var data = Clipboard.GetDataObject();
+                if (data.GetDataPresent(DataFormats.Text))
                 {
-                    System.Media.SystemSounds.Beep.Play();
-                    MessageBox.Show("有効な文字列がクリップボードにありません\r\n" + CanCopyMessage, "XOpener-Convert エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    var path = Clipboard.GetText();
+                    if (string.IsNullOrEmpty(path) || path.Contains("\n") || path.StartsWith("http:"))
+                    {
+                        System.Media.SystemSounds.Beep.Play();
+                        MessageBox.Show("有効な文字列がクリップボードにありません\r\n" + CanCopyMessage, "XOpener-Convert エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        var pathWithoutQuotation = path.Replace("\"", "");
+                        CopyPathToClipBoard(pathWithoutQuotation);
+                    }
                 }
                 else
                 {
-                    var pathWithoutQuotation = path.Replace("\"", "");
-                    var url = "<a href=\"" + "http://localhost:10082?path=" + HttpUtility.UrlEncode(pathWithoutQuotation) + "\">xopener:" + pathWithoutQuotation + "</a>";
-                    var html = CreateHtmlDocument(url);
-                    // HTMLをクリップボードに貼り付けるときはUTF-8に変換したMemoryStreamにする
-                    // byte[]だとエラーになった
-                    var obj = new DataObject();
-                    obj.SetData(DataFormats.Html, true, new MemoryStream(Encoding.UTF8.GetBytes(html)));
-                    obj.SetData(DataFormats.Text, true, "xopener:" + pathWithoutQuotation);
-                    Clipboard.SetDataObject(obj);
-
-                    System.Media.SystemSounds.Asterisk.Play();
-                    // コンバート確認のポップアップを表示
-                    if (_hidesConvertedPopUp == false)
-                    {
-                        MessageBox.Show(pathWithoutQuotation + "\r\nを" + html + "に変換しました", "XOpener-Convert 情報", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    }
+                    System.Media.SystemSounds.Beep.Play();
+                    MessageBox.Show("有効な文字列がクリップボードにありません\r\n" + CanCopyMessage, "XOpener-Convert エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
             }
             else
             {
-                System.Media.SystemSounds.Beep.Play();
-                MessageBox.Show("有効な文字列がクリップボードにありません\r\n" + CanCopyMessage, "XOpener-Convert エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var path = args[0];
+
+                if (string.IsNullOrEmpty(path) || path.Contains("\n") || path.StartsWith("http:"))
+                {
+                    System.Media.SystemSounds.Beep.Play();
+                    MessageBox.Show("有効な文字列ではありません\r\n" + CanCopyMessage, "XOpener-Convert エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    var pathWithoutQuotation = path.Replace("\"", "");
+                    CopyPathToClipBoard(pathWithoutQuotation);
+                }
             }
+        }
+
+        private static void CopyPathToClipBoard(string pathWithoutQuotation)
+        {
+            var url = "<a href=\"" + "http://localhost:10082?path=" + HttpUtility.UrlEncode(pathWithoutQuotation) + "\">xopener:" + pathWithoutQuotation + "</a>";
+            var html = CreateHtmlDocument(url);
+            // HTMLをクリップボードに貼り付けるときはUTF-8に変換したMemoryStreamにする
+            // byte[]だとエラーになった
+            var obj = new DataObject();
+            obj.SetData(DataFormats.Html, true, new MemoryStream(Encoding.UTF8.GetBytes(html)));
+            obj.SetData(DataFormats.Text, true, "xopener:" + pathWithoutQuotation);
+            Clipboard.SetDataObject(obj);
+
+#if DISABLE_RESULT_WINDOW
+            // すぐに終了するとクリップボードに貼り付けられないので少し待つ
+            Task.Run(async () =>
+            {
+                await Task.Delay(500);
+                Application.Exit();
+            });
+            Application.Run();
+#else
+            System.Media.SystemSounds.Asterisk.Play();
+            MessageBox.Show(pathWithoutQuotation + "\r\nをHTML形式に変換しました", "XOpener-Convert 情報", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+#endif
         }
 
         private static string CreateHtmlDocument(string htmlBody)
@@ -76,10 +106,10 @@ namespace XOpenerConverter
             var htmlHeader = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head>\r\n<body>\r\n<!--StartFragment-->\r\n";
             var htmlFooter = "<!--EndFragment-->\r\n</body>\r\n</html>\r\n";
 
-            int headerSize = 89;
-            int htmlHeaderSize = Encoding.UTF8.GetByteCount(htmlHeader);
-            int htmlFragmentSize = Encoding.UTF8.GetByteCount(htmlBody);
-            int htmlFooterSize = Encoding.UTF8.GetByteCount(htmlFooter);
+            var headerSize = 89;
+            var htmlHeaderSize = Encoding.UTF8.GetByteCount(htmlHeader);
+            var htmlFragmentSize = Encoding.UTF8.GetByteCount(htmlBody);
+            var htmlFooterSize = Encoding.UTF8.GetByteCount(htmlFooter);
 
             htmlBuilder.Append("Version:0.9\r\nStartHTML:");
             htmlBuilder.AppendFormat("{0:000000}", headerSize);

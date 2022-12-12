@@ -1,0 +1,4 @@
+*.reg text
+*.cs diff=csharp text
+
+* text=auto
