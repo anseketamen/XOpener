@@ -49,7 +49,7 @@ namespace XOpenerTrans
         {
             _listener.Start();
 
-            Task.Run(() =>
+            Task.Run(async () =>
             {
                 while (true)
                 {
@@ -58,17 +58,14 @@ namespace XOpenerTrans
                         break;
                     }
                     var client = _listener.AcceptTcpClient();
-                    Task.Run(async () =>
+                    try
                     {
-                        try
-                        {
-                            await TcpAcceptTask(client);
-                        }
-                        finally
-                        {
-                            client.Dispose();
-                        }
-                    }, _listenerTaskCancellationTokenSource.Token);
+                        await TcpAcceptTask(client);
+                    }
+                    finally
+                    {
+                        client.Dispose();
+                    }
                 }
             }, _listenerTaskCancellationTokenSource.Token);
         }
@@ -79,29 +76,16 @@ namespace XOpenerTrans
             using (var reader = new StreamReader(stream))
             using (var writer = new StreamWriter(stream))
             {
-                // ヘッダー部分を全部読んでおく
-                var requestHeaders = new List<string>();
-                while (true)
-                {
-                    var line = await reader.ReadLineAsync();
-                    // HTTPはヘッダー部分とレスポンス部分の間にCR+LFだけの行がある
-                    // そこまで読んだら終わり
-                    if (string.IsNullOrWhiteSpace(line))
-                    {
-                        break;
-                    }
-                    requestHeaders.Add(line);
-                }
+                // 1行目だけ読めば事足りる
+                var requestLine = await reader.ReadLineAsync();
 
-                // ヘッダが空なら400エラー
-                if (requestHeaders.Count == 0)
+                if (string.IsNullOrEmpty(requestLine))
                 {
                     await WriteBadRequestAsync(writer);
                     return;
                 }
 
                 // 1行目は GET / HTTP/1.1 みたいな感じ
-                var requestLine = requestHeaders.FirstOrDefault();
                 var requestParts = requestLine.Split(' ');
                 if (requestParts.Length != 3)
                 {
@@ -119,7 +103,7 @@ namespace XOpenerTrans
                     var decodedPath = HttpUtility.UrlDecode(path);
 
                     // 転送
-                    await writer.WriteLineAsync("HTTP/1.0 303 See Other");
+                    await writer.WriteLineAsync("HTTP/1.0 302 Found");
                     await writer.WriteLineAsync("Content-Type: text/plain; charset=UTF-8");
                     await writer.WriteLineAsync("Location: xopener:" + path);
                     await writer.WriteLineAsync();

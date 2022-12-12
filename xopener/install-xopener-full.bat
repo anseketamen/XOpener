@@ -8,7 +8,10 @@ taskkill /F /IM xopener-trans.exe
 
 echo XOpener を生成しています...
 "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /define:%DEBUGSYMBOLS% /t:winexe ./xopener.cs
-regedit /s %~dp0%xopener.reg
+
+echo レジストリを登録しています...
+rem なぜか相対パスだと弾かれるので絶対パスにする
+regedit /s %~dp0%xopener-full.reg
 
 cd helpers
 

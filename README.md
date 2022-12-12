@@ -5,15 +5,15 @@ ChromeやEdgeからエクスプローラーを開くツール
 
 ## インストール
 
-`git clone`するか右上のボタンから`Download ZIP`するかしてファイルを落として、中の`xopener`というフォルダをCドライブ直下に配置します。
-
+1. `git clone`するか右上のボタンから`Download ZIP`するかしてファイルを落として、中の`xopener`というフォルダをCドライブ直下に配置します。  
 以下のようなファイル・フォルダがあればOKです。
 
 ```
 C:\xopener\install-xopener.bat
-C:\xopener\install-xopener-all.bat
+C:\xopener\install-xopener-full.bat
 C:\xopener\xopener.cs
-C:\xopener\xopener.reg
+C:\xopener\xopener-pico.reg
+C:\xopener\xopener-full.reg
 C:\xopener\helpers
 C:\xopener\helpers\xopener-convert.cs
 C:\xopener\helpers\xopener-convert-html.cs
@@ -23,11 +23,13 @@ C:\xopener\helpers\xopener-trans.lnk
 
 ※エクスプローラー上では`XOpener-Trans.lnk`の拡張子は見えなくなっています。
 
-1. XOpenerだけインストールする場合:  
-`install-xopener.bat`を実行します。UAC制御が出てきたら「はい」を選択してください。
+2. バッチファイルを起動します。以下3つのうちから1つを選んでください。
 
-2. XOpener-Helpersもインストールする場合:  
-`install-xopener-all.bat`を実行します。UAC制御が出てきたら「はい」を選択してください。
+  * 【おすすめ】XOpener-Helpersもインストールする場合:  
+  `install-xopener-full.bat`を実行します。UAC制御が出てきたら「はい」を選択してください。
+
+  * XOpenerだけインストールする場合:  
+`install-xopener.bat`を実行します。UAC制御が出てきたら「はい」を選択してください。
 
 
 ## 使い方
@@ -46,16 +48,26 @@ Markdownはこれ。
 [Cドライブへのリンク](xopener:C:\\)
 ```
 
+`install-xopener-full.bat` を使用して XOpener-Helpers もインストールした場合は以下も使えます。
+
+`helpers\\xopener-convert.exe` を実行、もしくは「送る」などに登録して実行した場合、Discordなどで使えるプレーンテキスト形式のリンクが生成されます。  
+ただし、リンクを開くためには送信先の相手も `install-xopener-full.bat` を使用して XOpener のインストールを済ませておく必要があります。
+
+エクスプローラのファイルやフォルダをShiftを押しながらクリックしてコンテキストメニューから「XOpener用にパスをコピー」を選択すると、Teamsなどで使えるHTML形式のリンクが生成されます。  
+`xopener-convert.exe` と同様、直接exeをダブルクリックしたり「送る」などに登録したりして実行しても同様の動作となります。  
+こちらも、リンクを開くためには送信先の相手も `install-xopener-full.bat` を使用して XOpener のインストールを済ませておく必要があります。
+
 
 ## アンインストール
 
 1. `xopener.reg`を見つつ、それっぽいレジストリキーを削除します。XOpener-Helpersも利用していた場合は、2.以降も実施します。
 2. スタートアップにXOpener-Transのショートカットが作成されているので削除します。
 3. XOpener-Trans.exeが起動していれば、タスクマネージャから終了します。
-4. helpersフォルダを削除します。
+4. `xopener-convert-shell.reg` を見つつ、それっぽいレジストリキーを削除します。
+5. helpersフォルダを削除します。
 
 
-## XOpener-Helpersについて
+## XOpener-Helpersについてもう少し詳細
 
 `helpers`フォルダに入っている、XOpenerをさらに便利に使うためのツールです。
 
