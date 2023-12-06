@@ -68,7 +68,7 @@ namespace XOpenerConverter
             var obj = new DataObject();
             obj.SetData(DataFormats.Html, true, new MemoryStream(Encoding.UTF8.GetBytes(html)));
             obj.SetData(DataFormats.Text, true, "xopener:" + pathWithoutQuotation);
-            Clipboard.SetDataObject(obj);
+            Clipboard.SetDataObject(obj, true);
 
 #if DISABLE_RESULT_WINDOW
             // すぐに終了するとクリップボードに貼り付けられないので少し待つ
